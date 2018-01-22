@@ -15,17 +15,12 @@ initialCommands in console := "import io.sqooba.sbt.genericpublish._"
 sbtVersion in Global := "1.1.0"
 
 /*
-scalaCompilerBridgeSource := {
-  val sv = appConfiguration.value.provider.id.version
-  ("org.scala-sbt" % "compiler-interface" % "1.1.0" % "component").sources
-}
-*/
-
 publishTo := {
   val realm = "Artifactory Realm"
   val artBaseUrl = "https://artifactory.sqooba.io/artifactory/libs-sbt-local"
   Some(realm at artBaseUrl)
 }
+*/
 
 libraryDependencies ++= Seq(
   // "org.scala-lang"              %   "scala-library"           % scalaVersion.value,
@@ -37,7 +32,7 @@ libraryDependencies ++= Seq(
 dependencyOverrides += "org.scala-lang" % "scala-compiler" % scalaVersion.value
 
 
-/* -- causes 409 conflict for some reason, so use sbt local for now
+/* -- causes 409 conflict for some reason, so use sbt local for now */
 publishTo := {
   val realm = "Artifactory Realm"
   val artBaseUrl = "https://artifactory.sqooba.io/artifactory"
@@ -47,4 +42,3 @@ publishTo := {
     Some(realm at s"$artBaseUrl/libs-release-local")
   }
 }
-*/
