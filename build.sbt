@@ -12,6 +12,13 @@ publishMavenStyle := true
 
 initialCommands in console := "import io.sqooba.sbt.genericpublish._"
 
+sbtVersion in Global := "1.1.0",
+
+scalaCompilerBridgeSource := {
+  val sv = appConfiguration.value.provider.id.version
+  ("org.scala-sbt" % "compiler-interface" % sv % "component").sources
+}
+
 publishTo := {
   val realm = "Artifactory Realm"
   val artBaseUrl = "https://artifactory.sqooba.io/artifactory/libs-sbt-local"
@@ -19,7 +26,7 @@ publishTo := {
 }
 
 libraryDependencies ++= Seq(
-  "org.scala-lang"              %   "scala-library"           % scalaVersion.value,
+  // "org.scala-lang"              %   "scala-library"           % scalaVersion.value,
   "org.scalactic"               %%  "scalactic"               % "3.0.4"   % Test,
   "org.scalatest"               %%  "scalatest"               % "3.0.4"   % Test,
   "org.mockito"                 %   "mockito-all"             % "1.10.19" % Test
