@@ -1,14 +1,14 @@
 package io.sqooba.sbt.genericpublish
 
-import sbt._
-import Keys._
-import complete.DefaultParsers._
 import java.io.File
+
+import sbt._
+import sbt.internal.util.ManagedLogger
+import Keys._
 
 import scala.io.Source
 import sys.process._
 
-import sbt.internal.util.ManagedLogger
 
 object SbtGenericPublish extends AutoPlugin {
 

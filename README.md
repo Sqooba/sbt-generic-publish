@@ -5,7 +5,7 @@ Sbt plugin to deploy any file. Used for example non standart tar-balls that you 
 Directory structure mimics maven like: 
 ```/org/domain/artifactid/version/artifactid-version.fileextension```.
 
-### Set up? ###
+### Set up ###
 
 SetUp to ./project/plugins.sbt:
 ```addSbtPlugin("io.sqooba.sbt" %% "sbt-generic-publish" % "0.1.0-SNAPSHOT")```
