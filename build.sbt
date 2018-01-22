@@ -19,6 +19,7 @@ publishTo := {
 }
 
 libraryDependencies ++= Seq(
+  "org.scala-lang"              %   "scala-library"           % scalaVersion.value,
   "org.scalactic"               %%  "scalactic"               % "3.0.4"   % Test,
   "org.scalatest"               %%  "scalatest"               % "3.0.4"   % Test,
   "org.mockito"                 %   "mockito-all"             % "1.10.19" % Test
