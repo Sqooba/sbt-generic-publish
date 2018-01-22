@@ -24,6 +24,8 @@ libraryDependencies ++= Seq(
   "org.mockito"                 %   "mockito-all"             % "1.10.19" % Test
 )
 
+dependencyOverrides += "org.scala-lang" % "scala-compiler" % scalaVersion.value
+
 
 /* -- causes 409 conflict for some reason, so use sbt local for now
 publishTo := {
