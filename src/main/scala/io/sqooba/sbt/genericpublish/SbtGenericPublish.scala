@@ -50,12 +50,12 @@ object SbtGenericPublish extends AutoPlugin {
       }
 
       val artifactAsFile = artifactPath.value
-      log.info(s"Publish to: $parseDeployPath")
-
+      val deployPath = parseDeployPath
       val creds = getCredsForRepo(getHostFromRepoUrl(repoUrl), log)
-      log.info(s"Creds: ${creds}")
+      log.info(s"Publish to: $deployPath")
+      log.info(s"Credentials: ${creds}")
 
-      deployArtifactToUri(artifactAsFile, parseDeployPath(), creds)
+      deployArtifactToUri(artifactAsFile, deployPath, creds)
     })
 
   def parseScalaMajorVersion(scalaV: String): String = scalaV.split('.').init.mkString(".")
