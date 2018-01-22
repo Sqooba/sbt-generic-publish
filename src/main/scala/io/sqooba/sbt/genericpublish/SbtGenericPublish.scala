@@ -62,13 +62,18 @@ object SbtGenericPublish extends AutoPlugin {
 
   def getValFromLine(line: String): String = line.split('=').last
 
-  def deployFile(assFile: File, url: String, creds: (String, String)) = {
-    val cmd = s"""curl -u ${creds._1}:${creds._2} -X PUT $url -T ${assFile.getAbsolutePath}"""
+  def deployFile(artifactFile: File, url: String, creds: (String, String)) = {
+    val cmd = s"""curl -u ${creds._1}:${creds._2} -X PUT $url -T ${artifactFile.getAbsolutePath}"""
     cmd !
   }
 
   def getHostFromRepoUrl(url: String): String = new URL(url).getHost
 
+  /**
+    * Scans .credential -files in user home directory for matching host.
+    * If found returns tuple of (username, password) to be used in the actual publish -action.
+    *
+    */
   def getCredsForRepo(repoHost: String, log: ManagedLogger): (String, String) = {
     val userHome: String = System.getProperty("user.home")
     val uHome = new File(s"$userHome/.sbt/")
