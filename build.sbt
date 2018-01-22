@@ -12,7 +12,7 @@ publishMavenStyle := true
 
 initialCommands in console := "import io.sqooba.sbt.genericpublish._"
 
-sbtVersion in Global := "1.1.0",
+sbtVersion in Global := "1.1.0"
 
 scalaCompilerBridgeSource := {
   val sv = appConfiguration.value.provider.id.version
