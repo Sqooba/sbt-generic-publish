@@ -7,12 +7,10 @@ organization := "io.sqooba.sbt"
 
 name := "sbt-generic-publish"
 
-version := "0.1.4.211-SNAPSHOT"
+version := "0.1.4-SNAPSHOT"
 
 // scalaVersion := "2.10.7"
-scalaVersion := "2.11.12"
-
-crossScalaVersions := Seq("2.11.12", "2.10.7")
+scalaVersion := "2.12.6"
 
 publishMavenStyle := true
 
