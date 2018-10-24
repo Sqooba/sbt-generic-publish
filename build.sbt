@@ -7,16 +7,13 @@ organization := "io.sqooba.sbt"
 
 name := "sbt-generic-publish"
 
-version := "0.1.4-SNAPSHOT"
+version := "0.1.6.0-SNAPSHOT"
 
-// scalaVersion := "2.10.7"
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.7"
 
 publishMavenStyle := true
 
 initialCommands in console := "import io.sqooba.sbt.genericpublish._"
-
-// sbtVersion in Global := "1.1.0"
 
 libraryDependencies ++= Seq(
   "org.scalactic"               %%  "scalactic"               % "3.0.5"   % Test,
@@ -26,9 +23,14 @@ libraryDependencies ++= Seq(
 
 dependencyOverrides += "org.scala-lang" % "scala-compiler" % scalaVersion.value
 
+val artUser = sys.env.get("ARTIFACTORY_CREDS_USR").getOrElse("")
+val artPass = sys.env.get("ARTIFACTORY_CREDS_PSW").getOrElse("")
+
+credentials += Credentials("Artifactory Realm", "artifactory-v2.sqooba.io", artUser, artPass)
+
 publishTo := {
   val realm = "Artifactory Realm"
-  val artBaseUrl = "https://artifactory.sqooba.io/artifactory/libs-sbt-local"
+  val artBaseUrl = "https://artifactory-v2.sqooba.io/artifactory/libs-sbt-local"
   Some(realm at artBaseUrl)
 }
 

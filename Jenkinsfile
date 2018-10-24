@@ -22,7 +22,7 @@ pipeline {
             }
             post {
                 always {
-                    archive "target/**/*"
+                    archiveArtifacts "target/**/*"
                     junit 'target/test-reports/*.xml'
                 }
             }

@@ -5,14 +5,20 @@ import java.io.File
 import sbt._
 import Keys._
 import scala.io.Source
-import java.io.{ BufferedInputStream, FileInputStream, FileOutputStream }
-import java.util.zip.{ ZipEntry, ZipOutputStream }
+import sys.process._
+import java.io.{BufferedInputStream, FileInputStream, FileOutputStream}
+import java.util.zip.{ZipEntry, ZipOutputStream}
+
+import sbt.internal.util.ManagedLogger
 
 
 object SbtGenericPublish extends AutoPlugin {
 
   object autoImport {
     val genericPublish = inputKey[Unit]("deploy any file necessary")
+    val zipit = inputKey[Unit]("Zip defined packages")
+    val assemblyArtifactPath = settingKey[String]("Assumed fat jar path.")
+    val assemblyArtifactFile = settingKey[String]("Assumed fat jar name.")
     val artifactArray = settingKey[Seq[String]]("Files to use to create archive.")
     val flattenArtifact = settingKey[Boolean]("Flatten resulting folder structure.")
   }
@@ -20,6 +26,23 @@ object SbtGenericPublish extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
+    assemblyArtifactPath := {
+      val majorScalaVersion = parseScalaMajorVersion(scalaVersion.value)
+      val assemblyFileName = s"${name.value}-assembly-${version.value}.jar"
+      // streams.value.log.info(s"./target/scala-$majorScalaVersion/$assemblyFileName")
+      // new File(s"./target/scala-$majorScalaVersion/$assemblyFileName")
+      s"target/scala-$majorScalaVersion/$assemblyFileName"
+    },
+    assemblyArtifactFile := {
+      val majorScalaVersion = parseScalaMajorVersion(scalaVersion.value)
+      val assemblyFileName = s"${name.value}-assembly-${version.value}.jar"
+      // streams.value.log.info(s"./target/scala-$majorScalaVersion/$assemblyFileName")
+      // new File(s"./target/scala-$majorScalaVersion/$assemblyFileName")
+      s"./target/scala-$majorScalaVersion/$assemblyFileName"
+    },
+    zipit := {
+      packageArtifacts(artifactPath.value, artifactArray.value, flattenArtifact.value)
+    },
     genericPublish := {
       val log = streams.value.log
       val majorScalaVersion = parseScalaMajorVersion(scalaVersion.value)
@@ -38,19 +61,17 @@ object SbtGenericPublish extends AutoPlugin {
 
       def parseFileExtension(): String = {
         val fileName = artifactPath.value.getName
-        fileName.substring(fileName.indexOf("."))
+        fileName.substring(fileName.lastIndexOf((".")))
       }
 
       def deployArtifactToUri(artFile: File, targetUrl: String, credentials: (String, String)) = {
         if (artFile.exists()) {
           log.info(s"Artifact to deploy: ${artFile.getName} exists, deploy to $targetUrl")
-          deployFile(artFile, targetUrl, credentials)
+          deployFile(artFile, targetUrl, credentials, log)
         } else {
           log.info(s"Artifact to deploy: ${artFile.getName} does not exists, can't deploy.")
         }
       }
-
-      getArtifactFile(artifactPath.value, artifactArray.value, flattenArtifact.value)
 
       val artifactAsFile = artifactPath.value
       val deployPath = parseDeployPath
@@ -70,9 +91,9 @@ object SbtGenericPublish extends AutoPlugin {
 
   def getValFromLine(line: String): String = line.split('=').last
 
-  def deployFile(artifactFile: File, url: String, creds: (String, String)) = {
+  def deployFile(artifactFile: File, url: String, creds: (String, String), log: ManagedLogger) = {
     val cmd = s"""curl -u ${creds._1}:${creds._2} -X PUT $url -T ${artifactFile.getAbsolutePath}"""
-    sys.process.Process(cmd)
+    cmd !
   }
 
   def getHostFromRepoUrl(url: String): String = new URL(url).getHost
@@ -99,7 +120,7 @@ object SbtGenericPublish extends AutoPlugin {
     }).head
   }
 
-  def getArtifactFile(artPath: File, seqArtifacts: Seq[String], flatten: Boolean): File = {
+  def packageArtifacts(artPath: File, seqArtifacts: Seq[String], flatten: Boolean): File = {
     if (seqArtifacts.isEmpty) {
       artPath
     } else {
