@@ -1,0 +1,13 @@
+language: scala
+jdk: openjdk8
+script: sbt -Dfile.encoding=UTF8 clean test
+
+matrix:
+  include:
+  - env: SBT_VERSION="1.2.8"
+    scala: 2.12.8
+
+cache:
+  directories:
+  - $HOME/.ivy2/cache
+  - $HOME/.sbt
